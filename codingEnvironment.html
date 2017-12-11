@@ -62,7 +62,10 @@
     <div style="background-color: #FFFFFF; float: left; width: 49%; height: 800px">
         <div style="height:53%;width:98%;outline-style: solid;outline-width: 1px;text-align:center;margin-left:5px;margin-top:5px;">
             <div style="position:absolute;z-index:4;width:45%;height:37%">
-                <canvas id="catAnimation"></canvas>
+                <canvas id="catAnimation">
+                   <h1 style="z">asdauhsdbjkahsbdhjkasbdjkhsabd<h1>
+                </canvas>
+
             </div>
         </div>
         <hr>
@@ -71,12 +74,15 @@
                 <tr>
                     <td>
                         <img src="images/cat1_numbered.png" style="margin-left:5px;margin-top:5px;outline-style: solid;outline-width: 1px;height:180px;" />
+                        <img src="images/pig1.png" style="margin-left:5px;margin-top:5px;outline-style: solid;outline-width: 1px;height:180px;" />
                     </td>
                     <td>
                         <img src="images/cat2_numbered.png" style="margin-left:5px;margin-top:5px;outline-style: solid;outline-width: 1px;height:180px;" />
+                        <img src="images/pig2.png" style="margin-left:5px;margin-top:5px;outline-style: solid;outline-width: 1px;height:180px;" />
                     </td>
                     <td>
                         <img src="images/cat3_numbered.png" style="margin-left:5px;margin-top:5px;outline-style: solid;outline-width: 1px;height:180px;" />
+                        <img src="images/pig3.png" style="margin-left:5px;margin-top:5px;outline-style: solid;outline-width: 1px;height:180px;" />
                     </td>
                 </tr>
             </table>
@@ -97,8 +103,17 @@
         <block type="whenrunclicked"></block>
         <block type="clearscreen"></block>
     </category>
-    <category name="cats" colour="175">
-        <block type="catpose"></block>
+
+    <category name="animals" colour="175">
+      <block type="saymessage"></block>
+
+      <category name="cats" colour="175">
+          <block type="catpose"></block>
+      </category>
+
+      <category name="pigs" colour="175">
+          <block type="pigpose"></block>
+      </category>
     </category>
 
     <sep></sep>
@@ -186,26 +201,53 @@
 
     var cat1 = sprite({
         context: canvas.getContext("2d"),
-        width: 500,
-        height: 500,
+        // width: 200,
+        // height: 200,
         image: catImage,
         x: 0,
+        y: 0
+    });
+
+    var pigImage = new Image();
+    pigImage.src = "images/pig1.png";
+
+    var pig1 = sprite({
+        context: canvas.getContext("2d"),
+        width: 200,
+        height: 200,
+        image: pigImage,
+        x: 200,
         y: 0
     });
 
     /******************
      * Show the cat *
      ******************/
-    cat1.render();
 
-    var indexToArrays = 0;
-    var numOfInstructions = 0;
-    var arrayOfPoses = [];
+    var indexToCatArrays = 0;
+    var indexToPigArrays = 0;
+    var numOfCatInstructions = 0;
+    var numOfPigInstructions = 0;
+    var arrayOfCatPoses = [];
+    var arrayOfPigPoses = [];
+
+    var catPoseNum = 1;
+    var pigPoseNum = 1;
+
+    var indexToMessageArrays = 0;
+    var arrayOfMessages = [];
+    var numOfMessageInstructions = 0;
+
+
 
     /**************************************
      * RUN and STOP buttons on the canvas *
      **************************************/
     function runCode() {
+        arrayOfCatPoses = [];
+        arrayOfPigPoses = [];
+        indexToCatArrays = 0;
+        indexToPigArrays = 0;
         code = Blockly.JavaScript.workspaceToCode(workspace);
         var formattedCode = code.split(";");
         console.log(formattedCode);
@@ -227,19 +269,48 @@
         window.requestAnimationFrame(animate);
     }
 
-    function updatePose(poseNum){
-        arrayOfPoses.push(poseNum);
-        numOfInstructions++;
+    function updateCatPose(poseNum){
+        arrayOfCatPoses.push(poseNum);
+        catPoseNum = poseNum
+        numOfCatInstructions++;
     }
+
+    function updatePigPose(poseNum){
+        arrayOfPigPoses.push(poseNum);
+        pigPoseNum = poseNum
+        numOfPigInstructions++;
+    }
+
+    function updateMessage(messageText){
+        arrayOfMessages.push(messageText)
+        numOfMessageInstructions++;
+    }
+
 
     function animate() {
         setTimeout(function() {
-            setcatImage(arrayOfPoses[indexToArrays]);
+            clearCanvas();
+            setpigImage(arrayOfPigPoses[indexToPigArrays]);
+            setcatImage(arrayOfCatPoses[indexToCatArrays]);
+            setMessageText(arrayOfMessages[indexToMessageArrays]);
+            // setpigImage(pigPoseNum);
+            // setcatImage(catPoseNum);
 
-            indexToArrays++;
+            indexToCatArrays++;
+            indexToPigArrays++;
+            indexToMessageArrays++;
 
-            if (indexToArrays == numOfInstructions)
-                indexToArrays = 0;
+            if (indexToCatArrays == numOfCatInstructions){
+                indexToCatArrays = 0;
+            }
+
+            if (indexToPigArrays == numOfPigInstructions){
+                indexToPigArrays = 0;
+            }
+
+            if (indexToMessageArrays == numOfMessageInstructions){
+                indexToMessageArrays = 0;
+            }
 
             if (animation) {
                 window.requestAnimationFrame(animate);
@@ -249,11 +320,16 @@
 
     function stopCode() {
         animation = false;
+        arrayOfCatPoses = [];
+        arrayOfPigPoses = [];
+        indexToCatArrays = 0;
+        indexToPigArrays = 0;
     }
 
     function resetCanvas(){
         clearCanvas();
         setcatImage(1);
+        setpigImage(1);
     }
 
     /*************************************
@@ -275,11 +351,33 @@
     function setcatImage(catIndex){
         if(!catIndex)
           catIndex = 1;
-        clearCanvas();
         catImage.src = "images/cat"+catIndex+".png";
         ctx.drawImage(cat1.image, cat1.x, cat1.y);
         ctx.save();
         ctx.restore();
+    }
+
+    function setpigImage(pigIndex){
+        if(!pigIndex)
+          pigIndex = 1;
+
+        pigImage.src = "images/pig"+pigIndex+".png";
+        ctx.drawImage(pig1.image, pig1.x, pig1.y);
+        ctx.save();
+        ctx.restore();
+    }
+
+
+    function setMessageText(message){
+        // if(!messageIndex)
+        //   messageIndex = 1;
+
+        console.log(message)
+
+        // pigImage.src = "images/pig"+pigIndex+".png";
+        // ctx.drawImage(pig1.image, pig1.x, pig1.y);
+        // ctx.save();
+        // ctx.restore();
     }
 
     /***********************
