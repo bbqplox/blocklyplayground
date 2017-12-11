@@ -63,7 +63,7 @@
         <div style="height:53%;width:98%;outline-style: solid;outline-width: 1px;text-align:center;margin-left:5px;margin-top:5px;">
             <div style="position:absolute;z-index:4;width:45%;height:37%">
                 <canvas id="catAnimation">
-                   <h1 style="z">asdauhsdbjkahsbdhjkasbdjkhsabd<h1>
+                   <!-- <h1 style="z">asdauhsdbjkahsbdhjkasbdjkhsabd<h1> -->
                 </canvas>
 
             </div>
@@ -155,10 +155,11 @@
      * Setup the Canvas *
      ********************/
     var canvas = document.getElementById("catAnimation");
-    canvas.width = 480;
+    canvas.width = 600;
     canvas.height = 480;
 
     var ctx = document.getElementById('catAnimation').getContext('2d');
+    ctx.font = "40px Helvetica"
 
     var animation = true;
 
@@ -193,9 +194,9 @@
         return spriteObj;
     }
 
-    /**********************
-     * Defining the cat *
-     **********************/
+    /*******************************
+     * Defining the animal sprites *
+     *******************************/
     var catImage = new Image();
     catImage.src = "images/cat1.png";
 
@@ -216,38 +217,38 @@
         width: 200,
         height: 200,
         image: pigImage,
-        x: 200,
+        x: 250,
         y: 0
     });
 
-    /******************
-     * Show the cat *
-     ******************/
-
+    // To keep track and make the run stuff loop around
     var indexToCatArrays = 0;
-    var indexToPigArrays = 0;
     var numOfCatInstructions = 0;
-    var numOfPigInstructions = 0;
     var arrayOfCatPoses = [];
+
+    var indexToPigArrays = 0;
+    var numOfPigInstructions = 0;
     var arrayOfPigPoses = [];
 
+    var indexToMessageArrays = 0;
+    var numOfMessageInstructions = 0;
+    var arrayOfMessages = [];
+
+    // for testing
     var catPoseNum = 1;
     var pigPoseNum = 1;
-
-    var indexToMessageArrays = 0;
-    var arrayOfMessages = [];
-    var numOfMessageInstructions = 0;
-
-
 
     /**************************************
      * RUN and STOP buttons on the canvas *
      **************************************/
     function runCode() {
+        animation = false;
         arrayOfCatPoses = [];
         arrayOfPigPoses = [];
+        arrayOfMessages = [];
         indexToCatArrays = 0;
         indexToPigArrays = 0;
+        indexToMessageArrays = 0;
         code = Blockly.JavaScript.workspaceToCode(workspace);
         var formattedCode = code.split(";");
         console.log(formattedCode);
@@ -293,7 +294,7 @@
             setpigImage(arrayOfPigPoses[indexToPigArrays]);
             setcatImage(arrayOfCatPoses[indexToCatArrays]);
             setMessageText(arrayOfMessages[indexToMessageArrays]);
-            // setpigImage(pigPoseNum);
+            // setpigImage(pigPoseNum); // for testing
             // setcatImage(catPoseNum);
 
             indexToCatArrays++;
@@ -322,8 +323,10 @@
         animation = false;
         arrayOfCatPoses = [];
         arrayOfPigPoses = [];
+        arrayOfMessages = [];
         indexToCatArrays = 0;
         indexToPigArrays = 0;
+        indexToMessageArrays = 0;
     }
 
     function resetCanvas(){
@@ -357,6 +360,9 @@
         ctx.restore();
     }
 
+    /*****************************
+     * Changing the pig's Pose *
+     *****************************/
     function setpigImage(pigIndex){
         if(!pigIndex)
           pigIndex = 1;
@@ -367,17 +373,13 @@
         ctx.restore();
     }
 
-
+    /*****************************
+     * Changing the message *
+     *****************************/
     function setMessageText(message){
-        // if(!messageIndex)
-        //   messageIndex = 1;
-
-        console.log(message)
-
-        // pigImage.src = "images/pig"+pigIndex+".png";
-        // ctx.drawImage(pig1.image, pig1.x, pig1.y);
-        // ctx.save();
-        // ctx.restore();
+        ctx.fillText(message, 200, 400);
+        ctx.save();
+        ctx.restore();
     }
 
     /***********************

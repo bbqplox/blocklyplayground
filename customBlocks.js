@@ -48,7 +48,7 @@ Blockly.Blocks['pigpose'] = {
             .appendField(new Blockly.FieldDropdown([["1","1"], ["2","2"], ["3","3"]]), "pigIndex");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour(175);
+        this.setColour(300);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -61,7 +61,7 @@ Blockly.Blocks['saymessage'] = {
             .appendField(new Blockly.FieldTextInput('type here'), 'theText');
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour(175);
+        this.setColour(240);
         this.setTooltip("");
         this.setHelpUrl("");
     }
@@ -92,7 +92,7 @@ Blockly.JavaScript['pigpose'] = function(block) {
 
 Blockly.JavaScript['saymessage'] = function(block) {
     var text = block.getFieldValue('theText');
-    console.log(text);
+    // console.log(text);
     text = '\'' + text + '\''
     var blockCode = 'updateMessage('+text+');';
     return blockCode;
